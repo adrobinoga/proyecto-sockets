@@ -4,18 +4,28 @@ import sys
 import traceback
 import threading
 
+ansi_colors = [
+    '\033[1;32m', # ANSI_GREEN
+    '\033[1;31m', #  ANSI_RED
+    '\033[1;35m', # ANSI_PURPLE
+    '\033[1;33m', # ANSI_YELLOW
+    '\033[1;34m', # ANSI_BLUE
+    '\033[0m' # ANSI_NOCOLOR
+]
+
 
 class Client(threading.Thread):
     """
     Cliente conectado al server 
     """
   
-    def __init__(self, socket_cliente, datos_cliente):
+    def __init__(self, socket_cliente, datos_cliente, color=ansi_colors[-1]):
         
         threading.Thread.__init__(self)
         self.conn = socket_cliente
         self.datos_str = datos_cliente[0] + ":" + str(datos_cliente[1]) # Datos del cliente
-        print("El cliente " + self.datos_str + " se ha conectado")
+        self.color=color
+        print(self.color+"El cliente " + self.datos_str + " se ha conectado"+ansi_colors[-1])
 
     def run(self):
         """
@@ -24,14 +34,14 @@ class Client(threading.Thread):
         while True:
             # recibe texto del cliente
             data = self.conn.recv(1024)
-            print("received: "+data)
+            print(self.color+"received: "+data+ansi_colors[-1])
 
             # devuelve texto en mayusculas
             self.conn.send(data.upper())
 
             # revisa por conexion terminada
             if data == '':
-                print('Conexion con ' + self.datos_str + ' terminada')
+                print(self.color+'Conexion con ' + self.datos_str + ' terminada'+ansi_colors[-1])
                 break
 
         self.conn.close()
@@ -75,7 +85,9 @@ def main():
             s.close()
             sys.exit(1)
 
-        hilo_cliente = Client(socket_cliente, datos_cliente)
+        hilo_cliente = Client(socket_cliente,
+                              datos_cliente,
+                              ansi_colors[len(clients)])
         hilo_cliente.start()
         clients.append(hilo_cliente) #Ingresa el cliente en la lista  
 
