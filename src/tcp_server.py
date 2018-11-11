@@ -49,7 +49,14 @@ def main():
     s = socket.socket()
     print('Socket de bienvenida creado')
 
-    s.bind((host,port)) # asocia el socket a un puerto
+    try:
+        s.bind((host,port)) # asocia el socket a un puerto
+    except (Exception):
+        print('')
+        traceback.print_exception(*sys.exc_info())
+        s.close()
+        print("El socket " + str(host) + ':' + str(port) + " ya esta en uso")
+        sys.exit(2)
 
     print('Se escuchan conexiones entrantes')
     s.listen(0)
@@ -58,7 +65,6 @@ def main():
         try:
             # espera por una solicitud de conexion
             socket_cliente, datos_cliente = s.accept()
-            #print('Conectado con %s : %s' % (addr[0],str(addr[1])))
         except (KeyboardInterrupt):
             print("\nExiting")
             s.close()
