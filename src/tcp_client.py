@@ -39,10 +39,12 @@ try:
         print("response: "+s.recv(1024))
         time.sleep(2)
 
-except (KeyboardInterrupt, Exception):
+except (KeyboardInterrupt):
+    print("\nExiting")
+    s.close()
+    sys.exit(0)
+except (Exception):
     print('')
     traceback.print_exception(*sys.exc_info())
     s.close()
-    print("Exiting")
-
-
+    sys.exit(1)

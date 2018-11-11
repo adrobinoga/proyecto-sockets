@@ -59,12 +59,15 @@ def main():
             # espera por una solicitud de conexion
             socket_cliente, datos_cliente = s.accept()
             #print('Conectado con %s : %s' % (addr[0],str(addr[1])))
-        except (KeyboardInterrupt, Exception):
+        except (KeyboardInterrupt):
+            print("\nExiting")
+            s.close()
+            sys.exit(0)
+        except (Exception):
             print('')
             traceback.print_exception(*sys.exc_info())
             s.close()
-            print("Exiting")
-            quit(1)
+            sys.exit(1)
 
         hilo_cliente = Client(socket_cliente, datos_cliente)
         hilo_cliente.start()
