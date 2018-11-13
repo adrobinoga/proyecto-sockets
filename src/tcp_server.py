@@ -54,6 +54,7 @@ def main():
     host = 'localhost'
     port = 50007
     clients = [] # lista de clientes
+    color_counter = 0
 
     # crea el socket de bienvenida
     s = socket.socket()
@@ -85,9 +86,13 @@ def main():
             s.close()
             sys.exit(1)
 
+        if len(clients) - color_counter >= len(ansi_colors):
+            color_counter = len(clients)
+
+        # Se crea un nuevo hilo para el cliente y se le asigna un color
         hilo_cliente = Client(socket_cliente,
                               datos_cliente,
-                              ansi_colors[len(clients)])
+                              ansi_colors[len(clients) -color_counter])
         hilo_cliente.start()
         clients.append(hilo_cliente) #Ingresa el cliente en la lista  
 
